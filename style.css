@@ -1,0 +1,14 @@
+#page-wrapper {
+  text-align: center;
+  margin: 20px;
+}
+
+#combinations td {
+  vertical-align: top;
+  padding: 5px;
+  text-align: left;
+}
+
+table#combinations {
+  width: 100%;
+}
