@@ -1,5 +1,11 @@
 /**
- * Given a string, find all combinations.
+ * Given a string, find all combinations of the letters in it.
+ *
+ * Words can be any length as long as they only use a given character
+ * once; a string "aab" can return "aa" and "ab" but not "aaa".
+ *
+ * @return
+ *  An object of words to bigram score.
  */
 function find_combinations(input_string) {
   // @see http://en.wikipedia.org/wiki/Bigram#Bigram_Frequency_in_the_English_language
@@ -92,10 +98,16 @@ function find_combinations(input_string) {
 }
 
 $(document).ready(function() {
+  // Stash the commonly used selectors for easy reuse.
   var $string_input = $('#string')
   var $table = $('#combinations');
   var $found_words = $('#found-words');
+  // Keeps track of the word currently being counted.
   var last_val = '';
+
+  /**
+   * Update the display table and found characters on input change.
+   */
   function update_combinations_table() {
     var val = $string_input.val();
     // We only recalculate for new values.
@@ -117,19 +129,22 @@ $(document).ready(function() {
       // @see http://stackoverflow.com/questions/1069666/sorting-javascript-object-by-property-value
       combinations_sorted = Object.keys(combinations).sort(function(a,b){return combinations[b] - combinations[a]});
       // Now we want to highlight what words are actual words, which we do with a word list.
-      // We're going to put this is an object so there's O(1) lookup once loaded.
       var words_in_dictionary = [];
       for (var i = 0; i < combinations_sorted.length; i++) {
         var word = combinations_sorted[i];
         var weight = combinations[word];
         var in_dictionary = false;
+        // Add a badge for bigram score if it has one.
         var badge = weight ? '<span class="badge" title="The higher this number the more likely it is a word.">' + weight + '</span>' : '';
         if (dictionary != undefined && dictionary[word]) {
           words_in_dictionary.push(word);
           in_dictionary = true;
         }
+        // Add the item, putting it as disabled if NOT in the dictionary.
         $columns[word.length].append('<li class="list-group-item ' + (in_dictionary ? '' : 'disabled') + '">' + badge + word + '</li>');
       }
+      // Not that we're not sanatizing input here or above so possible to add new markup.
+      // Being that it's going to be run locally once, that seems fine for now.
       if (words_in_dictionary.length) {
         $found_words.html('<div class="alert alert-success" role="alert">Words found in dictionary: ' + words_in_dictionary.join(', ') + '</div>')
       }
